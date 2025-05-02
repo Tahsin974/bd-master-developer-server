@@ -26,7 +26,7 @@ async function run() {
     const database = client.db("bd-master-developer");
     const technologyCollection = database.collection("technologies");
     const testimonialCollection = database.collection("testimonials");
-    const articleCollection = database.collection("articles");
+    const blogCollection = database.collection("blogs");
     const serviceCollection = database.collection("services");
     const memberCollection = database.collection("members");
     const contactInfoCollection = database.collection("contactInfo");
@@ -43,17 +43,17 @@ async function run() {
       const result = await testimonialCollection.find({}).toArray();
       res.json(result);
     });
-    // Articles Apis
-    app.get("/articles", async (req, res) => {
-      const result = await articleCollection.find({}).toArray();
+    // blogs Apis
+    app.get("/blogs", async (req, res) => {
+      const result = await blogCollection.find({}).toArray();
       res.json(result);
     });
-    // Articles Apis (using category)
-    app.get("/articles/:category", async (req, res) => {
+    // blogs Apis (using category)
+    app.get("/blogs/:category", async (req, res) => {
       const category = req.params.category;
       console.log(category);
       const query = { category: category };
-      const result = await articleCollection.find(query).toArray();
+      const result = await blogCollection.find(query).toArray();
       res.json(result);
     });
     // Services Apis
