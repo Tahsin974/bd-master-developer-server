@@ -29,6 +29,7 @@ async function run() {
     const articleCollection = database.collection("articles");
     const serviceCollection = database.collection("services");
     const memberCollection = database.collection("members");
+    const contactInfoCollection = database.collection("contactInfo");
     // Get APIs
     // Technologies Apis
     app.get("/technologies", async (req, res) => {
@@ -63,6 +64,14 @@ async function run() {
     // Members Apis
     app.get("/members", async (req, res) => {
       const result = await memberCollection.find({}).toArray();
+      res.json(result);
+    });
+
+    // POST APIs
+    // contact form data
+    app.post("/contact", async (req, res) => {
+      const contactInfo = req.body;
+      const result = await contactInfoCollection.insertOne(contactInfo);
       res.json(result);
     });
   } finally {
