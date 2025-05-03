@@ -4,7 +4,7 @@ const PORT = process.env.port || 5000;
 const CORS = require("cors");
 const app = express();
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.dbUser}:${process.env.dbPass}@cluster0.3lwmdbh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 console.log(uri);
 // call middlewares
@@ -45,15 +45,44 @@ async function run() {
     });
     // blogs Apis
     app.get("/blogs", async (req, res) => {
-      const result = await blogCollection.find({}).toArray();
+      const options = {
+        projection: { title: 1, image: 1, tag: 1, description: 1 },
+      };
+      const result = await blogCollection.find({}, options).toArray();
       res.json(result);
     });
-    // blogs Apis (using category)
+    // get blogs (using category)
     app.get("/blogs/:category", async (req, res) => {
       const category = req.params.category;
-      console.log(category);
+
       const query = { category: category };
-      const result = await blogCollection.find(query).toArray();
+      const options = {
+        projection: { title: 1, image: 1, tag: 1, description: 1, slug: 1 },
+      };
+      const result = await blogCollection.find(query, options).toArray();
+      res.json(result);
+    });
+    // get blog details (using slug)
+    app.get("/blog-details/:slug", async (req, res) => {
+      const slug = req.params.slug;
+      const query = { slug: slug };
+
+      const result = await blogCollection.findOne(query);
+      res.json(result);
+    });
+    // get latest blogs
+    app.get("/latest-blogs", async (req, res) => {
+      const blogStatus = req.query.status;
+      const currentBlogId = req.query.id;
+      const query = {
+        status: blogStatus,
+        _id: { $ne: new ObjectId(currentBlogId) },
+      };
+      const options = {
+        projection: { title: 1, image: 1, status: 1, slug: 1 },
+        sort: { publish_date: -1 },
+      };
+      const result = await blogCollection.find(query, options).toArray();
       res.json(result);
     });
     // Services Apis
