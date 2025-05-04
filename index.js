@@ -46,7 +46,7 @@ async function run() {
     // blogs Apis
     app.get("/blogs", async (req, res) => {
       const options = {
-        projection: { title: 1, image: 1, tag: 1, description: 1 },
+        projection: { title: 1, image: 1, tag: 1, description: 1, slug: 1 },
       };
       const result = await blogCollection.find({}, options).toArray();
       res.json(result);
