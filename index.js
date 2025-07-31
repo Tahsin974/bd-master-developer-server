@@ -92,7 +92,10 @@ async function run() {
     });
     // Members Apis
     app.get("/members", async (req, res) => {
-      const result = await memberCollection.find({}).toArray();
+      const options = {
+        sort: { role: -1, title: 1 },
+      };
+      const result = await memberCollection.find({}, options).toArray();
       res.json(result);
     });
 
